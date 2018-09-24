@@ -3,6 +3,7 @@ Base settings to build other settings files upon.
 """
 
 import environ
+import os
 
 ROOT_DIR = environ.Path(__file__) - 3  # (djangogirls/config/settings/base.py - 3 = djangogirls/)
 APPS_DIR = ROOT_DIR.path('djangogirls')
@@ -39,10 +40,11 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/dev/ref/settings/#databases
 
 DATABASES = {
-    'default': env.db('DATABASE_URL', default='postgres:///djangogirls'),
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(ROOT_DIR, 'db.sqlite3'),
+    }
 }
-DATABASES['default']['ATOMIC_REQUESTS'] = True
-
 # URLS
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#root-urlconf
@@ -71,6 +73,7 @@ THIRD_PARTY_APPS = [
 ]
 LOCAL_APPS = [
     'djangogirls.users.apps.UsersAppConfig',
+    'djangogirls.blog1.apps.Blog1Config'
     # Your stuff: custom apps go here
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
