@@ -10,7 +10,7 @@
             <form method="POST" action = "{% url 'post_delete' pk=post.pk %}">{% csrf_token %}
             {{ form.as_p }}
             <button type="submit">delete</button>
-
+            {% include 'button.html'%}
             </form>
             <p>{{ post.text|linebreaksbr }}</p>
         </div>
