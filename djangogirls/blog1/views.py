@@ -1,50 +1,58 @@
 from django.shortcuts import render
+from django.urls import reverse_lazy
 from django.utils import timezone
+from django.views import generic
+
 from .models import Post
 from .forms import PostForm
 from django.shortcuts import render, get_object_or_404
 from django.shortcuts import redirect, render_to_response
+from django.views.generic.edit import CreateView, DeleteView, UpdateView
 
 
-def post_list(request):
-    posts = Post.objects.filter(published_date__lte=timezone.now()).order_by('-published_date')
-    return render(request, 'blog/post_list.html', {'posts': posts})
+class ListPost(generic.ListView):
+    template_name = 'blog1/post_list.html'
+    model = Post
+    context_object_name = 'posts'
+
+    def get_queryset(self):
+        """Return the last five published questions."""
+        return Post.objects.filter(published_date__lte=timezone.now()).order_by('-published_date')
 
 
-def post_detail(request, pk):
-    post = get_object_or_404(Post, pk=pk)
-    return render(request, 'blog/post_detail.html', {'post': post})
+class DetailPost(generic.DetailView):
+    template_name = 'blog1/post_detail.html'
+    model = Post
 
 
-def post_new(request):
-    if request.method == "POST":
-        form = PostForm(request.POST)
-        if form.is_valid():
-            post = form.save(commit=False)
-            post.author = request.user
-            post.published_date = timezone.now()
-            post.save()
-            return redirect('post_detail', pk=post.pk)
-    else:
-        form = PostForm(initial={'text': 'default'})
-    return render(request, 'blog/post_edit.html', {'form': form})
+class NewPost(generic.CreateView):
+    model = Post
+    form_class = PostForm
+    template_name = 'blog1/post_edit.html'
+
+    def form_valid(self, form):
+        form.instance.published_date = timezone.now()
+        form.instance.author = self.request.user
+        return super(NewPost, self).form_valid(form)
+
+    def get_success_url(self):
+        return reverse_lazy('blog1:post_detail', kwargs={'pk': self.object.pk})
 
 
-def post_edit(request, pk):
-    post = get_object_or_404(Post, pk=pk)
-    if request.method == "POST":
-        form = PostForm(request.POST, instance=post)
-        if form.is_valid():
-            post = form.save(commit=False)
-            post.author = request.user
-            post.published_date = timezone.now()
-            post.save()
-            return redirect('post_detail', pk=post.pk)
-    else:
-        form = PostForm(instance=post)
-    return render(request, 'blog/post_edit.html', {'form': form})
+class EditPost(generic.UpdateView):
+    form_class = PostForm
+    template_name = 'blog1/post_edit.html'
+    model = Post
+
+    def form_valid(self, form):
+        form.instance.published_date = timezone.now()
+        return super(EditPost, self).form_valid(form)
+
+    def get_success_url(self):
+        return reverse_lazy('blog1:post_detail', kwargs={'pk': self.object.pk})
 
 
-def post_delete(request, pk):
-    Post.objects.get(pk=pk).delete()
-    return redirect('post_list')
+class DeletePost(generic.DeleteView):
+    model = Post
+    success_url = reverse_lazy('blog1:post_list')
+

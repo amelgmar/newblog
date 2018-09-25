@@ -1,4 +1,4 @@
-{% extends 'blog/base.html' %}
+{% extends 'blog1/base.html' %}
 
 {% block content %}
     {% for post in posts %}
@@ -6,8 +6,8 @@
             <div class="date">
                 {{ post.published_date|date:'Y-D' }}
             </div>
-            <h1><a href="{% url 'post_detail' pk=post.pk %}">{{ post.title }}</a></h1>
-            <form method="POST" action = "{% url 'post_delete' pk=post.pk %}">{% csrf_token %}
+            <h1><a href="{% url 'blog1:post_detail' pk=post.pk %}">{{ post.title }}</a></h1>
+            <form method="POST" action = "{% url 'blog1:post_delete' pk=post.pk %}">{% csrf_token %}
             {{ form.as_p }}
             <button type="submit">delete</button>
             {% include 'button.html'%}
