@@ -5,9 +5,13 @@ from django.views import generic
 
 from .models import Post
 from .forms import PostForm
+from .forms import PostForm, MailForm
+
+from django.core.mail import send_mail
 from django.shortcuts import render, get_object_or_404
 from django.shortcuts import redirect, render_to_response
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
+from django.core.mail import EmailMessage
 
 
 class ListPost(generic.ListView):
@@ -56,3 +60,16 @@ class DeletePost(generic.DeleteView):
     model = Post
     success_url = reverse_lazy('blog1:post_list')
 
+class MailPost(generic.FormView):
+    form_class = MailForm
+    template_name = 'blog1/post_mail.html'
+    success_url = reverse_lazy('blog1:post_list')
+
+    def form_valid(self, form):
+        subject = form.cleaned_data['subject']
+        message = form.cleaned_data['feedback']
+        destination = form.cleaned_data['destination']
+
+        email = EmailMessage(subject, message, to=[destination])
+        email.send()
+        return super(MailPost, self).form_valid(form)
