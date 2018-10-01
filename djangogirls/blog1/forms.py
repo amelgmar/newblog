@@ -5,11 +5,20 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Div, Submit, HTML, Button, Row, Field
 from crispy_forms.bootstrap import AppendedText, PrependedText, FormActions
 
+
 class PostForm(forms.ModelForm):
+    helper = FormHelper()
+    helper.layout = Layout(
+        'title',
+        'text',
+        FormActions(
+            Submit('add ', 'add post', css_class="btn-primary"),
+        )
+    )
 
     class Meta:
         model = Post
-        fields = ('title', 'text',)        fields = ('title', 'text',)
+        fields = ('title', 'text',)
 
 
 class MailForm(forms.Form):
