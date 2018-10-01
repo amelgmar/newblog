@@ -1,4 +1,5 @@
 from django import forms
+from django.urls import reverse_lazy
 
 from .models import Post
 from crispy_forms.helper import FormHelper
@@ -7,14 +8,26 @@ from crispy_forms.bootstrap import AppendedText, PrependedText, FormActions
 
 
 class PostForm(forms.ModelForm):
-    helper = FormHelper()
-    helper.layout = Layout(
-        'title',
-        'text',
-        FormActions(
-            Submit('add ', 'add post', css_class="btn-primary"),
+
+    def __init__(self, *args, **kwargs):
+        super(PostForm, self).__init__(*args, **kwargs)
+        is_edit = True if self.instance and self.instance.id else False
+
+        self.helper = FormHelper()
+        
+        if is_edit:
+            self.helper.form_action = reverse_lazy('blog1:post_edit', kwargs={'pk': self.instance.pk})
+            valuebutton = 'edit post'
+        else:
+            self.helper.form_action = reverse_lazy('blog1:post_new')
+            valuebutton = 'add post'
+        self.helper.layout = Layout(
+            'title',
+            'text',
+            FormActions(
+                Submit('submit', valuebutton, css_class="btn-primary"),
+            )
         )
-    )
 
     class Meta:
         model = Post
