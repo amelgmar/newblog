@@ -1,18 +1,54 @@
 {% extends 'blog1/base.html' %}
+{% load static %}
+{% block javascript %}
+  {{ block.super }}
+  <script src="{% static 'js/main.js' %}"></script>
+{% endblock %}
 
 {% block content %}
+
+  <table class="table" id="post-table" width="400">
+    <thead>
+    <tr>
+      <th>#</th>
+      <th>Title</th>
+      <th>Author</th>
+
+      <th>Publication date</th>
+      <th>Text</th>
+
+    </tr>
+    </thead>
+    <tbody>
     {% for post in posts %}
-        <div class="post">
-            <div class="date">
-                {{ post.published_date|date:'Y-D' }}
-            </div>
-            <h1><a href="{% url 'blog1:post_detail' pk=post.pk %}">{{ post.title }}</a></h1>
-            <form method="POST" action = "{% url 'blog1:post_delete' pk=post.pk %}">{% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit">delete</button>
-            {% include 'button.html'%}
-            </form>
-            <p>{{ post.text|linebreaksbr }}</p>
-        </div>
+      <tr id="post_{{ post.id }}">
+        <td >{{ post.id }}</td>
+        <td ><h1><a href="{% url 'blog1:post_detail' pk=post.pk %}" id='title_{{ post.id}}'>{{ post.title }}</a></h1></td>
+        <td >{{ post.author }}</td>
+        <td >{{ post.published_date }}</td>
+        <td id ='text_{{ post.id }}'>{{ post.text }}</td>
+        <td >
+          <button type="button"
+                  class="btn btn-danger btn-sm js-delete-post"
+                  data-url="{% url 'blog1:post_delete' post.id %}">
+            <span class="glyphicon glyphicon-trash"></span> Delete
+          </button>
+          <button type="button"
+              class="btn btn-warning btn-sm js-update-post"
+              data-url="{% url 'blog1:post_edit' post.id %}">
+        <span class="glyphicon glyphicon-pencil"></span> Edit
+         </button>
+        </td>
+      </tr>
+    {% empty %}
+
     {% endfor %}
+    </tbody>
+  </table>
+  <div class="modal fade" id="modal-post">
+    <div class="modal-dialog">
+      <div class="modal-content">
+      </div>
+    </div>
+  </div>
 {% endblock %}

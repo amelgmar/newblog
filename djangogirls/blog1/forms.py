@@ -18,17 +18,27 @@ class PostForm(forms.ModelForm):
         if is_edit:
             self.helper.form_action = reverse_lazy('blog1:post_edit', kwargs={'pk': self.instance.pk})
             valuebutton = 'edit post'
+            cancel_button = Button('cancel', 'Cancel', css_class="btn btn-default",
+                                   data_dismiss="modal", )
         else:
             self.helper.form_action = reverse_lazy('blog1:post_new')
             valuebutton = 'add post'
+            cancel_button = HTML("""<a href="{% url "blog1:post_list" %}" class="btn btn-default">Cancel</a>""")
+        self.helper.form_class = 'form-horizontal'
+        self.helper.label_class = 'col-md-2 col-xs-3'
+        self.helper.field_class = 'col-md-12 col-xs-13'
         self.helper.layout = Layout(
-            'title',
-            'text',
+
+            Field('title', max_length=30, css_class='modal-body'),
+            Field('text', rows="3", css_class='modal-body', ),
             FormActions(
-                Submit('submit', valuebutton, css_class="btn-primary"),
-            )
+
+                cancel_button,
+                Submit('submit', valuation, css_class='btn btn-primary'),
+                css_class="modal-footer", style="background: #FAFAFA; padding: 20px;"),
         )
 
+        self.helper.form_class = "js-post-update-form"
     class Meta:
         model = Post
         fields = ('title', 'text',)
