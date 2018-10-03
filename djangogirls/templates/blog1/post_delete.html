@@ -1,17 +1,16 @@
-<form method="post" id="myModal" action="{% url 'blog1:post_delete' post.id %}" class="js-post-delete-form">
-  {% csrf_token %}
-  <div class="modal-header">
+<div class="modal-body">
+  <form method="post" id="myModal" action="{% url 'blog1:post_delete' post.id %}" class="js-post-delete-form">
+    {% csrf_token %}
     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
       <span aria-hidden="true">&times;</span>
     </button>
     <h4 class="modal-title">Confirm book deletion</h4>
-  </div>
-  <div class="modal-body">
+
     <input type="hidden" name="id" value="{{ post.id }}">
-    <p class="lead">Are you sure you want to delete the post <strong>{{ post.title }}</strong>?</p>
-  </div>
-  <div class="modal-footer">
-    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-    <button type="submit" class="btn btn-danger">Delete post</button>
-  </div>
-</form>
+    <p class="delete">Are you sure you want to delete the post <strong>{{ post.title }}</strong>?</p>
+    <div class='buttons_delete'>
+      <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      <button type="submit" class="btn btn-danger">Delete post</button>
+    </div>
+  </form>
+</div>

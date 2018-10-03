@@ -8,7 +8,7 @@ $(function () {
             type: 'get',
             dataType: 'json',
             success: function (data) {
-                $("#modal-post .modal-content").html(data.html_form);
+                $("#modal-post .modal-body").html(data.html_form);
             }
         });
     });
@@ -40,7 +40,7 @@ $(function () {
             type: 'get',
             dataType: 'json',
             success: function (data) {
-                $("#modal-post .modal-content").html(data.html_form);
+                $("#modal-post .modal-body").html(data.html_form);
             }
         });
     });

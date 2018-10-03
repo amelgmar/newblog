@@ -21,21 +21,20 @@ class PostForm(forms.ModelForm):
             cancel_button = Button('cancel', 'Cancel', css_class="btn btn-default",
                                    data_dismiss="modal", )
         else:
-            self.helper.form_action = reverse_lazy('blog1:post_new')
-            valuebutton = 'add post'
-            cancel_button = HTML("""<a href="{% url "blog1:post_list" %}" class="btn btn-default">Cancel</a>""")
-        self.helper.form_class = 'form-horizontal'
-        self.helper.label_class = 'col-md-2 col-xs-3'
-        self.helper.field_class = 'col-md-12 col-xs-13'
-        self.helper.layout = Layout(
+            self.helper.form_action = reverse('blog1:post_new')
+            valuation = 'add post'
+            cancel_button = HTML("""<a href="{% url "blog1:post_list" %}" class="cancelbutton">Cancel</a>""")
 
-            Field('title', max_length=30, css_class='modal-body'),
-            Field('text', rows="3", css_class='modal-body', ),
-            FormActions(
+        self.helper.layout = Layout(
+            Field('title', max_length=30, ),
+            Field('text', rows="3", ),
+            Div(
 
                 cancel_button,
                 Submit('submit', valuation, css_class='btn btn-primary'),
-                css_class="modal-footer", style="background: #FAFAFA; padding: 20px;"),
+                # style="background: FAFAFA; padding: 20px;"
+                css_class='form-group buttons'
+            ),
         )
 
         self.helper.form_class = "js-post-update-form"
